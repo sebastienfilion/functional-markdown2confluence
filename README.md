@@ -7,7 +7,7 @@ Simple CLI to publish local Markdown files to Confluence.
 Requires [Deno](https://deno.land/) (>=1.0.0).
 
 ```shell script
-$ deno install --unstable --allow-read --allow-env --allow-net -n m2c https://deno.land/x/functional_markdown2confluence.git@v0.1.1/cli.js
+$ deno install --unstable --allow-read --allow-env --allow-net -n m2c https://deno.land/x/functional_markdown2confluence@v0.1.1/cli.js
 ```
 
 # Usage
