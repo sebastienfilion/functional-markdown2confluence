@@ -7,15 +7,15 @@ Simple CLI to publish local Markdown files to Confluence.
 Requires [Deno](https://deno.land/) (>=1.0.0).
 
 ```shell script
-$ deno install --unstable --allow-read --allow-env --allow-net -n m2c https://deno.land/x/functional_markdown2confluence@v0.1.1/cli.js
+$ deno install --unstable --allow-read --allow-env --allow-net -n m2c https://deno.land/x/functional_markdown2confluence@v0.2.0/cli.js
 ```
 
 # Usage
 
-You can run the CLI by passing the Confluence content ID and the relative local file path -- either HTML or Markdown.
+You can run the CLI by passing the relative local file paths -- either HTML or Markdown.
 
 ```shell script
-$ m2c <confluence-content-id> <file-path>
+$ m2c publish <file-path...>
 ```
 
 ## Configurations
@@ -27,10 +27,10 @@ You can either store your configurations as environment variables or by passing 
 
 domain={DOMAIN}
 token={TOKEN}
-username= {USERNAME}
+username={USERNAME}
+space={SPACE}
 ```
 
 ```shell script
-$ m2c <confluence-content-id> <file-path> --configurations m2c.conf
+$ m2c publish <file-path...> --configurations m2c.conf
 ```
-
