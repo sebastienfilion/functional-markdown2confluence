@@ -1,4 +1,4 @@
-import { blue } from "https://deno.land/std@0.76.0/fmt/colors.ts";
+import { blue, gray, red } from "https://deno.land/std@0.76.0/fmt/colors.ts";
 import { walk } from "https://deno.land/std@0.76.0/fs/mod.ts";
 import {
   ap,
@@ -91,7 +91,9 @@ export const safeExtract = curry(
   (message, container) => container.fold({
     Left: error => {
       throw new Error(`${message} Error: ${
-        (error.hasOwnProperty('raw')) ? new TextDecoder().decode(error.raw) : error.message
+        (error.hasOwnProperty('raw')) 
+          ? new TextDecoder().decode(error.raw) 
+          : `${red(error.message)}\n${gray(error.stack)}`
       }`)
     },
     Right: value => value
@@ -188,7 +190,18 @@ export const extractDocumentationBlocks = compose(
 // injectOptions :: (String -> Task Object) -> (Array -> Task Object -> Task a) -> Task a
 export const injectOptions = curry(
   (readConfigurations, binaryFunction) => ap(
-    curry((argumentList, configurations) => configurations.chain(binaryFunction(argumentList))),
+    curry(
+      // Temporary fix
+      (argumentList, configurations) => {
+        argumentList = [ ...argumentList ];
+        const flagIndex = argumentList.findIndex(either(equals('--configurations'), equals('-c')));
+        if (flagIndex >= 0) {
+          argumentList.splice(flagIndex, 2);
+        }
+
+        return configurations.chain(binaryFunction(argumentList))
+      }
+    ),
     compose(
       path => path ? readConfigurations(path) : Task.of({}),
       argumentList => {

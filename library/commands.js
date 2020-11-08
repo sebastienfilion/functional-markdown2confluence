@@ -64,8 +64,9 @@ export const handleCommand = cond([
                 username: Deno.env.get("CONFLUENCE_USERNAME")
               },
               configurations
-            )
-          )(sourceFilePathList)
+            ),
+            sourceFilePathList
+          )
       )
     )
   ],
@@ -111,5 +112,5 @@ export const handlePublishCommand = curry(
     // String[] -> Task File[]
     collectFiles,
     map(path => `${Deno.cwd()}/${path}`)
-  )(sourceFilePathList)
+)(sourceFilePathList)
 );

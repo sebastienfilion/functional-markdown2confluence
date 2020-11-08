@@ -3,14 +3,12 @@ import File from "https://deno.land/x/functional_io@v0.4.2/library/File.js";
 import { readFile } from "https://deno.land/x/functional_io@v0.4.2/library/fs.js";
 
 import { handleCommand } from "./library/commands.js";
-import { parseConfigurationFile, safeExtract } from "./library/utilities.js";
+import { safeExtract } from "./library/utilities.js";
 
 if (import.meta.url === Deno.mainModule) {
   const containerA = handleCommand(Deno.args);
 
   const containerB = await containerA.run();
-
-  console.log(containerB);
 
   safeExtract("Failed to run the command.", containerB);
 
