@@ -103,17 +103,18 @@ export const createConfluenceContent = curry(
         new TextEncoder().encode(
           JSON.stringify(
             {
-              title: confluenceContent.meta.title,
-              type: confluenceContent.meta.type,
-              space: {
-                key: confluenceContent.meta.space
-              },
               body: {
                 [bodyType]: {
                   representation: bodyType,
                   value: new TextDecoder().decode(confluenceContent.raw)
                 }
-              }
+              },
+              space: {
+                key: confluenceContent.meta.space
+              },
+              status: confluenceContent.meta.status,
+              title: confluenceContent.meta.title,
+              type: confluenceContent.meta.type,
             }
           )
         )
@@ -151,7 +152,7 @@ export const retrieveConfluenceContent = curry(
           },
           method: "GET",
           mode: "cors",
-          url: `https://${domain}/wiki/rest/api/content/${confluenceContent.ID}?expand=body.${bodyType},version`
+          url: `https://${domain}/wiki/rest/api/content/${confluenceContent.ID}?status=any&expand=body.${bodyType},version`
         },
         new Uint8Array([])
       )
@@ -176,17 +177,18 @@ export const updateConfluenceContent = curry(
         new TextEncoder().encode(
           JSON.stringify(
             {
-              id: confluenceContent.ID,
-              version: {
-                number: ++confluenceContent.meta.version.number
-              },
-              title: confluenceContent.meta.title,
-              type: confluenceContent.meta.type,
               body: {
                 [bodyType]: {
                   representation: bodyType,
                   value: new TextDecoder().decode(confluenceContent.raw)
                 }
+              },
+              id: confluenceContent.ID,
+              status: confluenceContent.meta.status,
+              title: confluenceContent.meta.title,
+              type: confluenceContent.meta.type,
+              version: {
+                number: ++confluenceContent.meta.version.number
               }
             }
           )

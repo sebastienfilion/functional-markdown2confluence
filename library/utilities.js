@@ -37,7 +37,7 @@ import { Marked } from "https://deno.land/x/markdown@v2.0.0/mod.ts";
 import Either from "https://deno.land/x/functional@v1.0.0/library/Either.js";
 import Buffer from "https://deno.land/x/functional_io@v0.4.2/library/Buffer.js";
 import File from "https://deno.land/x/functional_io@v0.4.2/library/File.js";
-import Task from "../../functional/library/Task.js";
+import Task from "https://deno.land/x/functional@v1.0.0/library/Task.js";
 import { readFile } from "https://deno.land/x/functional_io@v0.4.2/library/fs.js";
 
 import {
@@ -46,6 +46,14 @@ import {
   retrieveConfluenceContent,
   updateConfluenceContent
 } from "./confluence.js";
+
+const $$decoder = new TextDecoder();
+const $$encoder = new TextEncoder();
+
+export const decodeRaw = $$decoder.decode.bind($$decoder);
+export const encodeText = $$encoder.encode.bind($$encoder);
+
+export const mapBuffer = unaryFunction => map(compose(encodeText, unaryFunction, decodeRaw));
 
 export const insideOut = curry(
   (T, list) => list.reduce(
@@ -124,9 +132,15 @@ export const resolveConfluenceContentFromFile = curry(
 export const resolveConfluenceContentFromConfluenceContent = curry(
   (options, file, confluenceContentID) => compose(
     map(
-      task => task.bimap(
+      confluenceContent => confluenceContent.bimap(
         _ => prepareContentForPublication(file.raw),
-        meta => ({ ...meta, title: resolveTitleFromFile(file) })
+        meta =>
+          ({
+            ...meta,
+            status: 'current',
+            title: resolveTitleFromFile(file),
+            version: meta.status === 'draft' ? { number: 0 } : meta.version
+          })
       ),
     ),
     retrieveConfluenceContentFromID(options)
@@ -305,7 +319,7 @@ export const resolveTitleFromFileName = compose(
   split(/(?=[A-Z0-9])|\-|\_/)
 );
 
-const resolveTitleFromFile = converge(
+export const resolveTitleFromFile = converge(
   or,
   [
     compose(

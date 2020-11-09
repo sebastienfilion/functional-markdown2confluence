@@ -177,7 +177,7 @@ Deno.test(
         _ => Task.of({ hoge: 'hoge' }),
         curry(
           (argumentList, configurations) => {
-            assertEquals(argumentList, [ '--configurations', `${Deno.cwd()}/fuga` ]);
+            assertEquals(argumentList, []);
             assertEquals(configurations, { hoge: 'hoge' });
 
             return Task.of(42);
